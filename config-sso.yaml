@@ -1,0 +1,22 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sso-config-client
+spec:
+  containers:
+    - name: sso-config
+      image: registry.access.redhat.com/rhscl/nodejs-4-rhel7
+      command: [ "/bin/sh", "/tmp/config-files/config-sso.sh" ]
+      env:
+        - name: PATH
+          value:  /opt/rh/rh-nodejs4/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        - name: LD_LIBRARY_PATH
+          value: /opt/rh/rh-nodejs4/root/usr/lib64
+      volumeMounts:
+      - name: config-volume
+        mountPath: /tmp/config-files
+  volumes:
+    - name: config-volume
+      configMap:
+        name: sso-config-files
+  restartPolicy: OnFailure
